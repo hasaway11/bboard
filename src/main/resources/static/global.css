@@ -1,0 +1,54 @@
+/*
+    - font-family는 1차 폰트, 2차 폰트, 3차 폰트
+        나눔 고딕을 사용하고 없으면 시스템 기본 산세리프 폰트를 사용해라
+    - serif : 꾸밈선이 있는 명조체 기본 폰트 (프린트용)
+      sans-serif : 꾸밈선이 없는 고딕체 기본 폰트 (화면용)
+    - font-weight : 글자 두께
+        100~900까지 있으며 일반 폰트는 regular(400), bold(700)
+*/
+* {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+    /* 블록 요소를 수평 가운데*/
+    width: 1000px;
+    margin: 0 auto;
+}
+
+header, nav, footer {
+    height: 50px;
+    line-height: 50px;
+    /* 블록 요소의 내용을 수평 가운데로 */
+    text-align: center;
+}
+
+header {
+    border : 1px solid red;
+    font-size: 1.2em;
+    letter-spacing: 1em;
+}
+
+footer {
+    border: 1px solid red;
+}
+
+section {
+    /* 개발자는 본문의 높이는 모른다. 레이아웃을 위해 최저 높이를 지정 */
+    min-height: 850px;
+}
+
+section h1 {
+    text-align: center;
+}
+
+.fail {
+    color: red;
+    font-size:0.8em;
+}
+

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Document</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">HOME</a>
+      <ul sec:authorize="isAnonymous()" class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/member/login">로그인</a></li>
+        <li class="nav-item"><a class="nav-link" href="/member/join">가입하기</a></li>
+        <li class="nav-item"><a class="nav-link" href="/member/find">아이디/비번 찾기</a></li>
+      </ul>
+      <ul sec:authorize="hasRole('USER')"  class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/post/write">글쓰기</a></li>
+        <li class="nav-item"><a class="nav-link" href="/member/readme">내정보</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="doLogout();">로그아웃</a></li>
+      </ul>
+      <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/admin/main">관리자</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="doLogout();">로그아웃</a></li>
+      </ul>
+    </div>
+  </nav>
+</body>
+</html>
