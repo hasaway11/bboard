@@ -1,0 +1,56 @@
+drop table member;
+drop table comments;
+drop table post;
+drop table member_post;
+drop sequence post_seq;
+drop sequence comments_seq;
+
+
+create table member (
+	username varchar2(10 char),
+	password varchar2(60 char),
+	email varchar2(30 char),
+	profile clob,
+	join_day date default sysdate,
+	role varchar2(15 char) default 'USER',
+	levels varchar2(15 char) default 'BRONZE',
+	failed_attempts number(1) default 0,
+	is_lock number(1) default 0
+);
+
+alter table member add constraint member_pk_username primary key(username);
+
+create table post (
+	pno number(6),
+	title varchar2(100 char),
+	content clob,
+	writer varchar2(10 char),
+	write_time date default sysdate,
+	read_cnt number(6) default 0,
+	good_cnt number(6) default 0,
+	bad_cnt number(6) default 0
+);
+
+alter table post add constraint post_pk_pno primary key(pno);
+
+create table comments (
+	cno number(6),
+	content varchar2(200 char),
+	writer varchar2(10 char),
+	write_time date,
+	pno number(6)
+);
+
+alter table comments add constraint comments_pk_cno primary key(cno);
+alter table comments add constraint comments_fk_pno foreign key(pno) references post(pno);
+
+create table member_post (
+	username varchar2(10 char),
+	pno number(6)
+);
+
+alter table member_post add constraint member_post_pk primary key(username, pno);
+
+
+create sequence post_seq;
+create sequence comments_seq;

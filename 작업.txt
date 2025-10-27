@@ -1,0 +1,40 @@
+1. Member 작업
+    Job-M01. 아이디 사용가능 확인 (REST. /api/member/check-username)
+        - 사용가능하면 200, 사용중이면 409
+    Job-M02. 회원 가입 (/member/join)
+        - 아이디 사용여부 확인
+        - 비밀번호 인코딩
+        - 프로필 사진이 없다면 기본 프사를, 있다면 프로필 사진을 base64로 인코딩
+    Job-M03. 아이디 찾기 (REST. /api/member/find-username)
+        - 아이디가 있으면 200, 없으면 409
+    Job-M04. 비밀번호 리셋 (REST. /api/member/reset-password)
+        - 아이디가 있으면 임시비밀번호를 생성한 다음 이메일로 보낸다 -> 200
+          아이디가 없으면 409
+    Job-M05. 비밀번호 확인 (/member/check-password)
+        - "내정보 보기"를 선택했을 때
+            비밀번호를 확인하지 않은 경우 실행된다
+        - 비밀번호를 확인
+            성공했다면 세션에 비밀번호 확인을 저장한 다음, 내정보 보기로 이동
+            실패한 경우 비밀번호 확인 재실행
+    Job-M06. 내정보 보기 (/member/readme)
+        - 비밀번호를 확인하지 않은 경우 비밀번호 확인으로 이동
+        - 비밀번호를 확인한 경우 내정보를 출력
+    Job-M07. 프로필 사진 변경 (REST. /api/member/update-profile)
+    Job-M08. 비밀번호 변경 (/member/update-password)
+        - 기존비밀번호가 일치하는 경우 새비밀번호를 인코딩한 다음 업데이트
+    Job-M09. 탈퇴 (/member/withdraw)
+        - 로그아웃한 다음 탈퇴 처리
+    Job-M10. 레벨 갱신 (컨트롤러X. @Scheduled() )
+
+2. Post
+3. Comments
+
+4. pom.xml에 의존성 추가
+   - log4jdbc : sql 로깅
+   - thymeleaf extras spring security 6
+   - apache commons : 비밀번호 생성
+
+5. 설정
+    - application.properties : 프로젝트 설정
+    - logback.xml : 스프링 로깅 라이브러리인 logback을 커스터마이즈
+    - log4jdbc~.properties : log4jdbc와 logback을 연결하는 설정(내용은 정해져 있다)
