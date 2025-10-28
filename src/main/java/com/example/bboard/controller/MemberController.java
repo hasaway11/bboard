@@ -7,6 +7,8 @@ import org.springframework.http.*;
 import org.springframework.security.access.prepost.*;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.*;
+import org.springframework.web.servlet.*;
 
 @Controller
 public class MemberController {
@@ -25,5 +27,11 @@ public class MemberController {
     if(avaialble)
       return ResponseEntity.ok("아이디가 사용가능합니다");
     return ResponseEntity.status(HttpStatus.CONFLICT).body("아이디가 사용중입니다");
+  }
+
+  @PostMapping("/member/join")
+  public ModelAndView join(MultipartFile profile) {
+    System.out.println(profile.getOriginalFilename());
+    return null;
   }
 }

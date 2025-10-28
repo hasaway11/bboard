@@ -19,7 +19,10 @@
     <nav th:replace="~{fragment/nav.html}"></nav>
     <main>
       <section>
-        <form action="/member/join" method="post">
+        <form action="/member/join" method="post" id="join-form" enctype="multipart/form-data">
+          <div class="mt-3 mb-3">
+            <input type="file" name="profile" class="form-control" accept=".jpg, .jpeg, .png">
+          </div>
           <div class="mt-3 mb-3">
             <label class="form-label">아이디:</label>
             <input type="text" name="username" id="username" class="form-control" onfocusout="usernameCheck();">
@@ -31,16 +34,52 @@
             <span id="password-msg" class="fail"></span>
           </div>
           <div class="mt-3 mb-3">
+            <label class="form-label">비밀번호 확인:</label>
+            <input type="password" id="password2" class="form-control" onfocusout="password2Check();">
+            <span id="password2-msg" class="fail"></span>
+          </div>
+          <div class="mt-3 mb-3">
             <label class="form-label">이메일:</label>
             <input type="email" name="email" id="email" class="form-control" onfocusout="emailCheck();">
             <span id="email-msg" class="fail"></span>
           </div>
-          <button type="button" onclick="회원가입();">가입하기</button>
+          <div class="d-grid mt-5">
+            <button type="button" class="btn btn-outline-primary btn-block" onclick="회원가입();">가입하기</button>
+          </div>
         </form>
       </section>
     </main>
     <footer th:replace="~{fragment/footer.html}"></footer>
   </div>
   <script src="/validate.js"></script>
+  <script>
+    function password2Check() {
+      const password = $('#password').val();
+      const password2 = $('#password2').val();
+      const errorElement = $('#password2-msg');
+
+      errorElement.text('');
+      if(password2==='') {
+        errorElement.text('비밀번호 확인 : 필수입력입니다');
+        return false;
+      }
+      if(password!==password2) {
+        errorElement.text('비밀번호가 일치하지 않습니다');
+        return false;
+      }
+      return true;
+    }
+
+    function 회원가입() {
+      const r1 = usernameCheck();
+      const r2 = passwordCheck();
+      const r3 = password2Check();
+      const r4 = emailCheck();
+      if((r1 && r2 && r3 && r4) === false)
+        return;
+      $('#join-form').submit();
+      //alert("가입처리합니다");
+    }
+  </script>
 </body>
 </html>
