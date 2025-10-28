@@ -8,9 +8,15 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface MemberDao {
+  // Job-M01. 아이디가 존재하는가? true/false로 리턴
+  @Select("select count(*) from member where username=#{username} and rownum=1")
+  boolean existsByUsername(String username);
+
+  // Job-M02
   @Insert("insert into member(username, password, email, profile) values(#{username}, #{password}, #{email}, #{profile})")
   long insert(Member member);
 
+  // 로그인
   @Select("select * from member where username=#{username}")
   Member findByUsername(String username);
 }
