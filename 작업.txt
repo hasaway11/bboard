@@ -91,6 +91,15 @@
       자바스크립트처럼 만들수도 있다
         Map<String, Object> saram = Map.of("irum","홍길동", "nai", 20);
 
+12. 서버로 넘기는 파일은 null이 되지 않는다
+    <input type='file' name='profile'>에서 파일을 선택하지 않고 서버로 넘기면
+    -> 서버에서 MultipartFile profile로 받았을 때 값이 null아니라 비어있는 MultipartFile이 된다
+
+    <input type='file' name='profile'>에서 서버로 넘겼는데
+    -> 서버에서 MultipartFile image로 받았다면....이 경우 null이다
+
+    즉 화면에서 input이 아예 없는 경우가 null이다
+
 
 
 

@@ -1,6 +1,8 @@
 package com.example.bboard.controller;
 
+import com.example.bboard.dto.*;
 import com.example.bboard.service.*;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
@@ -17,6 +19,7 @@ public class MemberController {
   @Autowired
   private MemberService memberService;
 
+  @PreAuthorize("isAnonymous()")
   @GetMapping("/member/join")
   public void join() {}
 
@@ -31,9 +34,10 @@ public class MemberController {
     return ResponseEntity.status(HttpStatus.CONFLICT).body("아이디가 사용중입니다");
   }
 
+  @PreAuthorize("isAnonymous()")
   @PostMapping("/member/join")
-  public ModelAndView join(MultipartFile profile) {
-    System.out.println(profile.getOriginalFilename());
-    return null;
+  public String join(@ModelAttribute @Valid MemberJoinDto dto) {
+    memberService.join(dto);
+    return "redirect:/member/login";
   }
 }
