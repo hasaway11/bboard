@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.*;
 import org.springframework.web.servlet.*;
 
+import java.util.*;
+
 @Controller
 public class MemberController {
   @Autowired

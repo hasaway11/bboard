@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bboard.dao.PostDao">
+  <select id="findAll1" resultType="map">
+    select p.pno, p.title, p.writer, to_char(p.write_time, 'yyyy-mm-dd hh:mi') as write_time, p.read_cnt, count(c.cno) as cnt
+    from post p left join comments c on p.pno=c.pno
+    group by  p.pno, p.title, p.writer, p.write_time, p.read_cnt order by p.pno desc
+  </select>
+
+  <select id="findAll2" resultType="com.example.bboard.dto.FindAllDto">
+    select p.pno, p.title, p.writer, to_char(p.write_time, 'yyyy-mm-dd hh:mi') as write_time, p.read_cnt, count(c.cno) as cnt
+    from post p left join comments c on p.pno=c.pno
+    group by  p.pno, p.title, p.writer, p.write_time, p.read_cnt order by p.pno desc
+  </select>
+</mapper>
