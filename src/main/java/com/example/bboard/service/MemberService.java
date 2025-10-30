@@ -4,6 +4,7 @@ import com.example.bboard.dao.*;
 import com.example.bboard.dto.*;
 import com.example.bboard.entity.*;
 import jakarta.validation.*;
+import org.apache.commons.lang3.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
@@ -73,5 +74,22 @@ public class MemberService {
     String 암호화된_비밀번호 = encoder.encode(dto.getPassword());
     dto.init(암호화된_비밀번호, 저장_프로필_이름);
     memberDao.insert(dto);
+  }
+
+  public String findUsername(String email) {
+    return memberDao.findUsernameByEmail(email);
+  }
+
+  // 1. 사용자 정보를 읽어온다 -> 사용자가 없으면 return false
+  // 2. 랜덤한 비밀번호를 생성한 다음 암호화 후 저장
+  // 3. 이메일로 임시 비밀번호를 전송한다
+  public boolean resetPassword(String username) {
+    Member member = memberDao.findByUsername(username);
+    if(member==null)
+      return false;
+    // pom.xml에 추가한 apache commons lang 라이브러리를 이용해 랜덤한 문자열을 생성한다
+    String randomPassword = RandomStringUtils.secure().nextAlphanumeric(10);
+    String 새로운_암호화_비밀번호 = encoder.encode(randomPassword);
+    return memberDao.updatePassword(새로운_암호화_비밀번호, username)==1;
   }
 }

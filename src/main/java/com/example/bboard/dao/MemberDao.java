@@ -20,4 +20,10 @@ public interface MemberDao {
   // 로그인
   @Select("select * from member where username=#{username}")
   Member findByUsername(String username);
+
+  @Select("select username from member where email=#{email}")
+  String findUsernameByEmail(String email);
+
+  @Update("update member set password=#{password} where username=#{username}")
+  long updatePassword(String password, String username);
 }
