@@ -37,7 +37,7 @@ public class MemberController {
   @PreAuthorize("isAnonymous()")
   @PostMapping("/member/join")
   public String join(@ModelAttribute @Valid MemberJoinDto dto) {
-    System.out.println(dto);
+    memberService.join(dto);
     return "redirect:/member/login";
   }
 }
