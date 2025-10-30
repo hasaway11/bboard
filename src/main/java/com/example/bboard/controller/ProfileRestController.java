@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.*;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 // @Controller : MVC + REST
@@ -54,8 +55,26 @@ public class ProfileRestController {
   }
 
   // Job-P02. 주소를 받아서 사진(byte 덩어리) + 파일 종류(contentType)를 응답
+  // 1. 프로필 이름 을 파라미터로 받는다
+  // 2. 임시 폴더 이름 + 프로필 이름으로 파일을 생성
+  // 3. 파일을 byte배열로 변환
+  // 4. contentType추가 ("image/jpeg", "image/png")
   @GetMapping("/api/temp/profile")
-  public ResponseEntity<byte[]> 프사_출력() {
-    return null;
+  public ResponseEntity<byte[]> 프사_출력(@RequestParam String profile) {
+    try {
+      File file = new File(TEMP_FOLDER_NAME, profile);
+      byte[] imageBytes = Files.readAllBytes(file.toPath());
+      // mime : 파일의 종류를 문자열로 표준 -> 이메일 첨부파일의 종류를 알려주기 위해 만들어짐
+      String mimeType = "image/jpeg";
+      if(profile.endsWith(".png"))
+        mimeType = "image/png";
+      else if(profile.endsWith(".gif"))
+        mimeType = "image/gif";
+      // mimeType을 자바의 MediaType으로 변환
+      MediaType type = MediaType.parseMediaType(mimeType);
+      return ResponseEntity.ok().contentType(type).body(imageBytes);
+    } catch(IOException e) {
+      return ResponseEntity.status(409).body(null);
+    }
   }
 }

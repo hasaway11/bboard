@@ -12,5 +12,5 @@ public class MemberJoinDto {
   private String password;
   @NotEmpty
   private String email;
-  private MultipartFile profile;
+  private String profile;
 }
