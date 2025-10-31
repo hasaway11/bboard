@@ -60,4 +60,5 @@ public class MemberController {
 //      return ResponseEntity.ok("임시비밀번호를 가입하신 이메일로 보냈습니다.");
 //    return ResponseEntity.status(409).body("사용자를 찾을 수 없습니다");
 //  }
+
 }

@@ -2,9 +2,13 @@ package com.example.bboard.service;
 
 import com.example.bboard.dao.*;
 import com.example.bboard.dto.*;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.mail.javamail.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
+import org.springframework.stereotype.Service;
 import org.springframework.util.*;
 
 import java.io.*;
@@ -15,6 +19,9 @@ public class MemberService {
   private MemberDao memberDao;
   @Autowired
   private PasswordEncoder encoder;
+  // application.properties의 이메일 설정을 가지고 메일보내는 객체를 생성해 주입해준다
+  @Autowired
+  private JavaMailSender sender;
 
   // Job-M01 아이디 사용여부 확인
   public boolean usernameAvailable(String username) {
@@ -81,7 +88,21 @@ public class MemberService {
     memberDao.insert(dto);
   }
 
-
+  public void 메일보내기() {
+    MimeMessage message = sender.createMimeMessage();
+    try {
+      MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
+      helper.setFrom("admin@bboard.com");
+      helper.setTo("hasaway1@daum.net");
+      helper.setSubject("테스트 메일입니다");
+      helper.setText("<p>우리나라 좋은나라</p><p>너네나라 좋은나라</p>", true);
+      sender.send(message);
+    } catch(MessagingException e) {
+      // 메일발송에 실패한 경우....but
+      // - 우리 프로젝트에서 직접 메일을 보내는 것이 아니라 gmail에게 요청하면 gmail이 메일을 보내는 방식
+      // - 메일 발송한 경우 그 정보는 gmail에 저장된다...개발자는 예외처리 불가
+    }
+  }
 }
 
 

@@ -27,6 +27,12 @@
         return true;
       };
 
+      // 아이디 찾기, 로그인에서 "아이디" 입력여부와 패턴을 확인할 함수
+      function usernamePatternCheck() {
+        return check('username', '아이디', $('#username'));
+      }
+
+      // 회원가입에서 아이디 입력여부, 패턴, 사용가능여부까지 확인할 함수
       async function usernameCheck() {
         const checkResult = check('username', '아이디', $('#username'));
         if(checkResult===false)
