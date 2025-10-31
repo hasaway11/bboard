@@ -9,21 +9,23 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface MemberDao {
-  // Job-M01. 아이디가 존재하는가? true/false로 리턴
+  // 아이디가 존재하는가? true/false로 리턴
   @Select("select count(*) from member where username=#{username} and rownum=1")
   boolean existsByUsername(String username);
 
-  // Job-M02
+  // 회원 가입 : 아이디, 비밀번호, 이메일, 프사를 저장
   @Insert("insert into member(username, password, email, profile) values(#{username}, #{password}, #{email}, #{profile})")
   long insert(MemberJoinDto member);
 
-  // 로그인
+  // 사용자 정보 읽기
   @Select("select * from member where username=#{username}")
   Member findByUsername(String username);
 
+  // 이메일로 아이디 읽기 - 아이디 찾기에서 사용
   @Select("select username from member where email=#{email}")
   String findUsernameByEmail(String email);
 
+  // 비밀번호 업데이트 - 비밀번호 찾기, 비밀번호 변경
   @Update("update member set password=#{password} where username=#{username}")
   long updatePassword(String password, String username);
 }

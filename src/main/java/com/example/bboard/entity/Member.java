@@ -1,5 +1,6 @@
 package com.example.bboard.entity;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.*;
