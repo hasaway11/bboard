@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.*;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+
 @Controller
 public class MemberController {
   @Autowired
@@ -43,22 +45,23 @@ public class MemberController {
   public void find() {
   }
 
-//  // M-03. 아이디 찾기
-//  @GetMapping("/api/member/find-username")
-//  public ResponseEntity<String> findUsername(@RequestParam String email) {
-//    String username = memberService.findUsername(email);
-//    if(username!=null)
-//      return ResponseEntity.ok(username);
-//    return ResponseEntity.status(409).body("사용자를 찾을 수 없습니다");
-//  }
-//
-//  // M-04. 임시 비밀번호를 생성해 가입한 이메일로 보낸다
-//  @PostMapping("/api/member/reset-password")
-//  public ResponseEntity<String> resetPassword(@RequestParam String username) {
-//    boolean result = memberService.resetPassword(username);
-//    if(result==true)
-//      return ResponseEntity.ok("임시비밀번호를 가입하신 이메일로 보냈습니다.");
-//    return ResponseEntity.status(409).body("사용자를 찾을 수 없습니다");
-//  }
+  // M-03. 아이디 찾기
+  // db에서 사용자를 찾아서 있으면 200 응답, 없으면 409 응답 -> Optional로 컨트롤러 처리
+  @GetMapping("/api/member/find-username")
+  public ResponseEntity<String> findUsername(@RequestParam String email) {
+    Optional<String> result = memberService.아이디찾기(email);
+    if(result.isEmpty())
+      return ResponseEntity.status(409).body("사용자를 찾을 수 없습니다");
+    return ResponseEntity.ok(result.get());
+  }
 
+
+  // M-04. 임시 비밀번호를 생성해 가입한 이메일로 보낸다
+  @PostMapping("/api/member/reset-password")
+  public ResponseEntity<String> resetPassword(@RequestParam String username) {
+    boolean result = memberService.비밀번호리셋(username);
+    if(result==true)
+      return ResponseEntity.ok("임시비밀번호를 가입하신 이메일로 보냈습니다.");
+    return ResponseEntity.status(409).body("사용자를 찾을 수 없습니다");
+  }
 }

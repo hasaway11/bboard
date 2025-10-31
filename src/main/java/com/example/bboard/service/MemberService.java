@@ -2,8 +2,10 @@ package com.example.bboard.service;
 
 import com.example.bboard.dao.*;
 import com.example.bboard.dto.*;
+import com.example.bboard.entity.*;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
+import org.apache.commons.lang3.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.mail.javamail.*;
 import org.springframework.security.crypto.password.*;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.*;
 
 import java.io.*;
+import java.util.*;
 
 @Service
 public class MemberService {
@@ -88,20 +91,38 @@ public class MemberService {
     memberDao.insert(dto);
   }
 
-  public void 메일보내기() {
+  private void 메일보내기(String from, String to, String subject, String text) {
     MimeMessage message = sender.createMimeMessage();
     try {
       MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
-      helper.setFrom("admin@bboard.com");
-      helper.setTo("hasaway1@daum.net");
-      helper.setSubject("테스트 메일입니다");
-      helper.setText("<p>우리나라 좋은나라</p><p>너네나라 좋은나라</p>", true);
+      helper.setFrom(from);
+      helper.setTo(to);
+      helper.setSubject(subject);
+      helper.setText(text, true);
       sender.send(message);
     } catch(MessagingException e) {
       // 메일발송에 실패한 경우....but
       // - 우리 프로젝트에서 직접 메일을 보내는 것이 아니라 gmail에게 요청하면 gmail이 메일을 보내는 방식
       // - 메일 발송한 경우 그 정보는 gmail에 저장된다...개발자는 예외처리 불가
     }
+  }
+
+  public Optional<String> 아이디찾기(String email) {
+    return memberDao.findUsernameByEmail(email);
+  }
+
+  public boolean 비밀번호리셋(String username) {
+    // 사용자를 찾는다
+    // 사용자가 없으면 작업 실패, 있으면 임시비밀번호 생성 -> 암호화 -> 저장 -> 메일발송
+    Member member = memberDao.findByUsername(username);
+    if(member==null)
+      return false;
+    String 임시비밀번호 = RandomStringUtils.secure().nextAlphanumeric(10);
+    String encodedPassword = encoder.encode(임시비밀번호);
+    memberDao.updatePassword(encodedPassword, username);
+    String text = "<p>임시비밀번호 : <b>" + 임시비밀번호 + "</b></p>";
+    메일보내기("admin@bboard.com", member.getEmail(), "임시비밀번호", text);
+    return true;
   }
 }
 

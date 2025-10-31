@@ -7,6 +7,8 @@ import com.example.bboard.dto.*;
 import com.example.bboard.entity.*;
 import org.apache.ibatis.annotations.*;
 
+import java.util.*;
+
 @Mapper
 public interface MemberDao {
   // 아이디가 존재하는가? true/false로 리턴
@@ -23,7 +25,7 @@ public interface MemberDao {
 
   // 이메일로 아이디 읽기 - 아이디 찾기에서 사용
   @Select("select username from member where email=#{email}")
-  String findUsernameByEmail(String email);
+  Optional<String> findUsernameByEmail(String email);
 
   // 비밀번호 업데이트 - 비밀번호 찾기, 비밀번호 변경
   @Update("update member set password=#{password} where username=#{username}")
