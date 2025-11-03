@@ -41,6 +41,6 @@ public class Member {
 
     long days = ChronoUnit.DAYS.between(this.joinDay, LocalDate.now());
 
-    return new MemberResponseDto(email, profileUrl, profile, joinDayString, levels.name(), days);
+    return new MemberResponseDto(email, profileUrl, profile, joinDayString, levels.getKor(), days);
   }
 }

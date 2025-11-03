@@ -17,7 +17,28 @@
     <header th:replace="~{/fragment/header.html}"></header>
     <nav th:replace="~{fragment/nav.html}"></nav>
     <main>
-      <section></section>
+      <section>
+        <table class="table">
+          <tr>
+            <td>이메일</td><td th:text="${member.email}"></td>
+          </tr>
+          <tr>
+            <td>가입일</td><td th:text="${member.joinDay}"></td>
+          </tr>
+          <tr>
+            <td>가입기간</td><td th:text="${member.days}"></td>
+          </tr>
+          <tr>
+            <td>레벨</td><td th:text="${member.level}"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <a class="btn btn-primary" href="/member/change-password">비밀번호 변경하기</a>
+            </td>
+          </tr>
+        </table>
+
+      </section>
     </main>
     <footer th:replace="~{fragment/footer.html}"></footer>
   </div>

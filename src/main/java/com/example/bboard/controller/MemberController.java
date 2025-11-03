@@ -92,7 +92,7 @@ public class MemberController {
     boolean result = memberService.checkPassword(password, principal.getName());
     if(result) {
       session.setAttribute("비밀번호_확인", true);
-      return "redirect:/member/read";
+      return "redirect:/member/readme";
     } else {
       // 1회성 에러 메시지를 가지고 이동하자
       // RedirectAttribute는 이동한 다음 출력할 수 있는 값이고 자동으로 사라진다
@@ -103,5 +103,17 @@ public class MemberController {
 
   @GetMapping("/member/login")
   public void login() {
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/member/change-password")
+  public void changePassword() {
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/api/member/change-password")
+  public ResponseEntity<Void> changePassword(ChangePasswordRequestDto dto, Principal principal) {
+    memberService.changePassword(dto, principal.getName());
+    return ResponseEntity.ok(null);
   }
 }

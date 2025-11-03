@@ -134,6 +134,15 @@ public class MemberService {
     Member m = memberDao.findByUsername(username).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
     return m.toResponseDto();
   }
+
+  // 못 찾았다 -> 비밀번호가 틀리다 -> 정상 처리
+  public void changePassword(ChangePasswordRequestDto dto, String username) {
+    Member m = memberDao.findByUsername(username).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
+    if(encoder.matches(dto.getCurrentPassword(), m.getPassword()))
+      throw new RuntimeException("비밀번호를 확인할 수 없습니다");
+    String newEncodedPassword = encoder.encode(dto.getNewPassword());
+    memberDao.updatePassword(newEncodedPassword, username);
+  }
 }
 
 

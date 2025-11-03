@@ -2,6 +2,7 @@ package com.example.bboard.entity;
 
 import lombok.*;
 
+@Getter
 @AllArgsConstructor
 public enum Level {
   BRONZE("소중한 분"), SILVER("귀하신 분"), GOLD("천생 연분");
