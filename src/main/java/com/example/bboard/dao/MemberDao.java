@@ -21,7 +21,7 @@ public interface MemberDao {
 
   // 사용자 정보 읽기
   @Select("select * from member where username=#{username}")
-  Member findByUsername(String username);
+  Optional<Member> findByUsername(String username);
 
   // 이메일로 아이디 읽기 - 아이디 찾기에서 사용
   @Select("select username from member where email=#{email}")

@@ -2,13 +2,17 @@ package com.example.bboard.controller;
 
 import com.example.bboard.dto.*;
 import com.example.bboard.service.*;
+import jakarta.servlet.http.*;
 import jakarta.validation.*;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.*;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.*;
 
+import java.security.*;
 import java.util.*;
 
 @Controller
@@ -59,9 +63,34 @@ public class MemberController {
   // M-04. 임시 비밀번호를 생성해 가입한 이메일로 보낸다
   @PostMapping("/api/member/reset-password")
   public ResponseEntity<String> resetPassword(@RequestParam String username) {
-    boolean result = memberService.비밀번호리셋(username);
-    if(result==true)
-      return ResponseEntity.ok("임시비밀번호를 가입하신 이메일로 보냈습니다.");
-    return ResponseEntity.status(409).body("사용자를 찾을 수 없습니다");
+    memberService.비밀번호리셋(username);
+    return ResponseEntity.ok("임시비밀번호를 가입하신 이메일로 보냈습니다.");
+  }
+
+  // M-05. 내정보 보기 (비밀번호 확인을 거쳐서 와야 한다)
+  @GetMapping("/member/read")
+  public ModelAndView read(HttpSession session) {
+
+    if(session.getAttribute("비밀번호_확인")==null)
+      new ModelAndView("redirect:/member/check-password");
+  }
+
+  // M-06. 비밀번호 확인 (이미 비밀번호를 확인했으면 내정보 보기로 간다)
+  @GetMapping("/member/check-password")
+  public ModelAndView checkPassword(HttpSession session) {
+    if(session.getAttribute("비밀번호_확인")!=null)
+      new ModelAndView("redirect:/member/read");
+    return new ModelAndView("member/check-password");
+  }
+
+  // 비밀번호 확인 후 성공하면 /member/read로, 실패하면 /member/check-password
+  @PostMapping("/member/check-password")
+  public String checkPassword(@RequestParam @NotEmpty String password, HttpSession session, Principal principal) {
+    boolean result = memberService.checkPassword(password, principal.getName());
+    if(result) {
+      session.setAttribute("비밀번호_확인", true);
+      return "redirect:/member/read";
+    }
+    return "redirect:/check-password";
   }
 }

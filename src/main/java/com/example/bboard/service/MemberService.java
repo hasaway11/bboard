@@ -8,6 +8,7 @@ import jakarta.mail.internet.*;
 import org.apache.commons.lang3.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.mail.javamail.*;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class MemberService {
 
     // 2. 기본프사_사용인 경우 기본프사 열기
     if(기본프사_사용) {
-      profile = "default.webp";
+      profile = BConstant.DEFAULT_PROFILE;
       source = new File(BConstant.PROFILE_FOLDER_NAME, profile);
     }
 
@@ -111,18 +112,15 @@ public class MemberService {
     return memberDao.findUsernameByEmail(email);
   }
 
-  public boolean 비밀번호리셋(String username) {
+  public void 비밀번호리셋(String username) {
     // 사용자를 찾는다
     // 사용자가 없으면 작업 실패, 있으면 임시비밀번호 생성 -> 암호화 -> 저장 -> 메일발송
-    Member member = memberDao.findByUsername(username);
-    if(member==null)
-      return false;
+    Member member = memberDao.findByUsername(username).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
     String 임시비밀번호 = RandomStringUtils.secure().nextAlphanumeric(10);
     String encodedPassword = encoder.encode(임시비밀번호);
     memberDao.updatePassword(encodedPassword, username);
     String text = "<p>임시비밀번호 : <b>" + 임시비밀번호 + "</b></p>";
     메일보내기("admin@bboard.com", member.getEmail(), "임시비밀번호", text);
-    return true;
   }
 }
 

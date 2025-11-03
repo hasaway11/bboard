@@ -2,6 +2,8 @@ package com.example.bboard.controller;
 
 import com.example.bboard.service.*;
 import jakarta.annotation.*;
+import jakarta.validation.constraints.*;
+import org.apache.coyote.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.*;
@@ -52,26 +54,20 @@ public class ProfileRestController {
     // 프로필 이미지를 출력하는 url과 프로필 이름을 Map에 담아 리턴
     // "/api/temp/profile?profile=spring.jpg" + "spring.jpg"
     String profileName = profile.getOriginalFilename();
-    String profileUrl = "/api/temp/profile?profile=" + profile.getOriginalFilename();
+    String profileUrl = "/api/profile-image/profile?profile=" + profile.getOriginalFilename();
     Map<String, Object> map = Map.of("profileUrl", profileUrl, "profileName", profileName);
     return ResponseEntity.ok(map);
   }
 
-  // Job-P02. 주소를 받아서 사진(byte 덩어리) + 파일 종류(contentType)를 응답
-  // 1. 프로필 이름 을 파라미터로 받는다
-  // 2. 임시 폴더 이름 + 프로필 이름으로 파일을 생성
-  // 3. 파일을 byte배열로 변환
-  // 4. contentType추가 ("image/jpeg", "image/png")
-  @GetMapping("/api/temp/profile")
-  public ResponseEntity<byte[]> 프사_출력(@RequestParam String profile) {
+  // binary(문자열이 아닌 데이터) 데이터를 리턴할 때는 데이터 종류를 함께 보내줘야 한다
+  private ResponseEntity<byte[]> readProfile(String folder, String profile) {
     try {
-      File file = new File(BConstant.TEMP_FOLDER_NAME, profile);
+      // 1. 파일을 byte 배열로 읽어오기
+      File file = new File(folder, profile);
       byte[] imageBytes = Files.readAllBytes(file.toPath());
-      // mime : 파일의 종류를 문자열로 표준 -> 이메일 첨부파일의 종류를 알려주기 위해 만들어짐
-      String mimeType = "image/jpeg";
 
-      // 파일의 확장자를 가지고 mimeType으로 변환하는 작업
-      // 파일의 확장자를 대소문자를 섞어서 사용할 수 있으므로 미리 소문자로 바꿔버리자
+      // 2. 파일의 확장자를 이용해 데이터의 종류(ContentType) 지정하기
+      String mimeType = "image/jpeg";
       profile = profile.toLowerCase();
       if(profile.endsWith(".png"))
         mimeType = "image/png";
@@ -79,12 +75,23 @@ public class ProfileRestController {
         mimeType = "image/gif";
       else if(profile.endsWith(".webp"))
         mimeType = "image/webp";
-
-      // mimeType을 자바의 MediaType으로 변환
       MediaType type = MediaType.parseMediaType(mimeType);
+
+      // 3. 데이터와 ContentType으로 ResponseEntity를 리턴
       return ResponseEntity.ok().contentType(type).body(imageBytes);
     } catch(IOException e) {
-      return ResponseEntity.status(409).body(null);
+      e.printStackTrace();
     }
+    return ResponseEntity.status(409).body(null);
+  }
+
+  @GetMapping("/api/profile-image/profile")
+  public ResponseEntity<byte[]> 미리보기(@RequestParam @NotEmpty String profile) {
+    return readProfile(BConstant.TEMP_FOLDER_NAME, profile);
+  }
+
+  @GetMapping("/api/profile-image/temp")
+  public ResponseEntity<byte[]> 가입할때_미리보기(@RequestParam @NotEmpty String profile) {
+    return readProfile(BConstant.PROFILE_FOLDER_NAME, profile);
   }
 }
