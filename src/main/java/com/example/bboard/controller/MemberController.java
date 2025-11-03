@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.*;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.*;
+import org.springframework.web.servlet.mvc.support.*;
 
 import java.security.*;
 import java.util.*;
@@ -68,11 +69,13 @@ public class MemberController {
   }
 
   // M-05. 내정보 보기 (비밀번호 확인을 거쳐서 와야 한다)
-  @GetMapping("/member/read")
-  public ModelAndView read(HttpSession session) {
-
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/member/readme")
+  public ModelAndView read(HttpSession session, Principal principal) {
     if(session.getAttribute("비밀번호_확인")==null)
-      new ModelAndView("redirect:/member/check-password");
+      return new ModelAndView("redirect:/member/check-password");
+    MemberResponseDto dto = memberService.read(principal.getName());
+    return new ModelAndView("member/readme").addObject("member", dto);
   }
 
   // M-06. 비밀번호 확인 (이미 비밀번호를 확인했으면 내정보 보기로 간다)
@@ -83,14 +86,22 @@ public class MemberController {
     return new ModelAndView("member/check-password");
   }
 
-  // 비밀번호 확인 후 성공하면 /member/read로, 실패하면 /member/check-password
+  // 비밀번호 확인 후 성공하면 /member/readme로, 실패하면 /member/check-password
   @PostMapping("/member/check-password")
-  public String checkPassword(@RequestParam @NotEmpty String password, HttpSession session, Principal principal) {
+  public String checkPassword(@RequestParam @NotEmpty String password, HttpSession session, Principal principal, RedirectAttributes ra) {
     boolean result = memberService.checkPassword(password, principal.getName());
     if(result) {
       session.setAttribute("비밀번호_확인", true);
       return "redirect:/member/read";
+    } else {
+      // 1회성 에러 메시지를 가지고 이동하자
+      // RedirectAttribute는 이동한 다음 출력할 수 있는 값이고 자동으로 사라진다
+      ra.addFlashAttribute("msg", "비밀번호를 확인하지 못했습니다");
+      return "redirect:/member/check-password";
     }
-    return "redirect:/check-password";
+  }
+
+  @GetMapping("/member/login")
+  public void login() {
   }
 }

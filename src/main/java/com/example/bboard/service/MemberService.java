@@ -5,6 +5,7 @@ import com.example.bboard.dto.*;
 import com.example.bboard.entity.*;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
+import jakarta.validation.constraints.*;
 import org.apache.commons.lang3.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.mail.javamail.*;
@@ -121,6 +122,17 @@ public class MemberService {
     memberDao.updatePassword(encodedPassword, username);
     String text = "<p>임시비밀번호 : <b>" + 임시비밀번호 + "</b></p>";
     메일보내기("admin@bboard.com", member.getEmail(), "임시비밀번호", text);
+  }
+
+  // 경우의 수 3가지 : 사용자가 없다, 비밀번호가 틀리다, 비밀번호가 맞다
+  public boolean checkPassword(String password, String username) {
+    Member m = memberDao.findByUsername(username).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
+    return encoder.matches(password, m.getPassword());
+  }
+
+  public MemberResponseDto read(String username) {
+    Member m = memberDao.findByUsername(username).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
+    return m.toResponseDto();
   }
 }
 
