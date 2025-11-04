@@ -54,7 +54,7 @@
     }
 
     async function resetPassword() {
-      const result = usernameCheck();
+      const result = usernamePatternCheck();
       if(result==false)
         return;
       // post 방식은 객체를 urlencode 형식으로 변환해서 넘겨야 한다

@@ -88,7 +88,7 @@ public class MemberController {
 
   // 비밀번호 확인 후 성공하면 /member/readme로, 실패하면 /member/check-password
   @PostMapping("/member/check-password")
-  public String checkPassword(@RequestParam @NotEmpty String password, HttpSession session, Principal principal, RedirectAttributes ra) {
+  public String checkPassword(@RequestParam String password, HttpSession session, Principal principal, RedirectAttributes ra) {
     boolean result = memberService.checkPassword(password, principal.getName());
     if(result) {
       session.setAttribute("비밀번호_확인", true);

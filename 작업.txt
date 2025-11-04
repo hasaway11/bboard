@@ -1,33 +1,38 @@
 1. Profile 작업
-    Job-P01. 프사 업로드 (REST. /api/profile/new)
-        - 사용자가 프사를 선택하면 서버의 임시폴더에 업로드
-        - 프사를 볼 수 있는 주소를 응답
-    Job-P02. 임시 폴더에 저장된 프사 보기 (REST. /api/temp/profile)
-        - 임시 폴더에 저장된 프사를 실제로 출력
-        - 프로그래밍에서 데이터는 문자 데이터 vs 비문자 데이터(binary. byte 덩어리)
-          비문자 데이터의 종류 : 엑셀, 파워포인트, 이미지, 음악.....다 비문자. 웹브라우저는 처리 방법을 모른다
-          비문자 데이터(즉 byte 덩어리)를 출력할 때는 데이터의 종류가 함께 응답되어야 한다
+    Job-P01. 프사 업로드 (REST. /api/profile/new) - *
+        - 사용자가 프사를 선택하면 서버의 임시폴더에 저장
+        - 서버는 프사를 볼 수 있는 url와 프사 이름을 응답
+    Job-P02. 임시 폴더에 저장된 프사 보기 (REST. /api/profile-image/temp) - *
+    Job-P03. 프로필 폴더에 저장된 프사 보기 (REST. /api/profile-image/profile) - *
+        - 임시 폴더 또는 프로필 폴더에 저장된 프사를 byte[]로 출력
+          비문자(binary) 데이터는 byte[]로 취급하며, 반드시 데이터의 종류를 추가해야 웹브라우저가 처리할 수 있다
+          데이터 종류를 ContentType이라고 한다
+
+    * 이미지 업로드하면 temp에 저장 -> 회원가입하면 temp에서 이미지를 찾아 profile로 옮긴다?
+      이미지만 선택하고 회원가입을 안하면 나중에 그 쓰레기 이미지들을 삭제하는 로직이 필요하다
 
 1. Member 작업
-    Job-M01. 아이디 사용가능 확인 (REST. /api/member/check-username)
+    Job-M01. 아이디 사용가능 확인 (REST. /api/member/check-username) - *
         - 사용가능하면 200, 사용중이면 409
-    Job-M02. 회원 가입 (/member/join)
+    Job-M02. 회원 가입 (/member/join) - *
         - 아이디, 비밀번호, 이메일, 업로드한 프사 이름
         - 아이디 사용여부 확인
         - 비밀번호 인코딩
         - 프사 처리
-    Job-M03. 아이디 찾기 (REST. /api/member/find-username)
+            프사이름이 있을 경우 temp에서 찾아 profile로 이동
+            프사이름이 없을 경우 기본 프사를 복사
+    Job-M03. 아이디 찾기 (REST. /api/member/find-username) - *
         - 아이디가 있으면 200, 없으면 409
-    Job-M04. 비밀번호 리셋 (REST. /api/member/reset-password)
+    Job-M04. 비밀번호 리셋 (REST. /api/member/reset-password) - *
         - 아이디가 있으면 임시비밀번호를 생성한 다음 이메일로 보낸다 -> 200
           아이디가 없으면 409
-    Job-M05. 비밀번호 확인 (/member/check-password)
+    Job-M05. 비밀번호 확인 (/member/check-password) - *
         - "내정보 보기"를 선택했을 때
             비밀번호를 확인하지 않은 경우 실행된다
         - 비밀번호를 확인
             성공했다면 세션에 비밀번호 확인을 저장한 다음, 내정보 보기로 이동
             실패한 경우 비밀번호 확인 재실행
-    Job-M06. 내정보 보기 (/member/readme)
+    Job-M06. 내정보 보기 (/member/readme) - *
         - 비밀번호를 확인하지 않은 경우 비밀번호 확인으로 이동
         - 비밀번호를 확인한 경우 내정보를 출력
     Job-M07. 프로필 사진 변경 (REST. /api/member/update-profile)
