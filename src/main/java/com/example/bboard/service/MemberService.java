@@ -143,6 +143,16 @@ public class MemberService {
     String newEncodedPassword = encoder.encode(dto.getNewPassword());
     memberDao.updatePassword(newEncodedPassword, username);
   }
+
+  public void delete(String username) {
+    // 1. 프사 삭제
+    // 2. DB에서 삭제
+    Member m = memberDao.findByUsername(username).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
+    File profileFile = new File(BConstant.PROFILE_FOLDER_NAME, m.getProfile());
+    if(profileFile.exists())
+      profileFile.delete();
+    memberDao.delete(username);
+  }
 }
 
 

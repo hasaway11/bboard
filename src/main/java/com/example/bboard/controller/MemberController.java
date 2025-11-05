@@ -119,4 +119,12 @@ public class MemberController {
     ra.addFlashAttribute("msg", "비밀번호를 변경했습니다. 다시 로그인하세요");
     return "redirect:/member/login";
   }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/member/delete")
+  public String delete(Principal principal, HttpSession session) {
+    memberService.delete(principal.getName());
+    session.invalidate();
+    return "redirect:/";
+  }
 }

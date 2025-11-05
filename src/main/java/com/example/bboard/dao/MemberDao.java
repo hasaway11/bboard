@@ -33,4 +33,7 @@ public interface MemberDao {
 
   @Update("update member set profile=#{profile} where username=#{username}")
   int updateProfile(String profile, String username);
+
+  @Delete("delete from member where username=#{username}")
+  int delete(String username);
 }

@@ -48,8 +48,14 @@
             <td>레벨</td><td th:text="${member.level}"></td>
           </tr>
           <tr>
-            <td colspan="2">
+            <td>비밀번호</td>
+            <td>
               <a class="btn btn-primary" href="/member/change-password">비밀번호 변경하기</a>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button class="btn btn-danger" onclick="doDelete();">탈퇴</button>
             </td>
           </tr>
         </table>
@@ -74,6 +80,17 @@
       } catch(err) {
         location.reload();
       }
+    }
+
+    function doDelete() {
+      const choice = confirm('탈퇴하시겠습니까');
+      if(choice===false)
+        return;
+      const form = `
+        <form action="/member/delete" method="post">
+        </form>
+      `;
+      $(form).appendTo($('body')).submit();
     }
   </script>
 </body>
