@@ -1,21 +1,28 @@
 package com.example.bboard.controller;
 
+import com.example.bboard.dao.*;
+import com.example.bboard.entity.*;
 import com.example.bboard.service.*;
 import jakarta.annotation.*;
 import jakarta.validation.constraints.*;
 import org.apache.coyote.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.*;
 
 import java.io.*;
 import java.nio.file.*;
+import java.security.*;
 import java.util.*;
 
 // @Controller : MVC + REST
 // @RestController : REST 전용
 @RestController
 public class ProfileRestController {
+  @Autowired
+  private MemberDao memberDao;
 
   // 스프링 프레임워크에서 객체 생성은 스프링이 담당 -> 생성자는 스프링이 사용해야 한다
   // 개발자에게는 생성자대신 사용할 초기화 함수가 필요 -> 함수 대신 어노테이션이 정해져 있다
@@ -93,5 +100,35 @@ public class ProfileRestController {
   @GetMapping("/api/profile-image/temp")
   public ResponseEntity<byte[]> 가입할때_미리보기(@RequestParam @NotEmpty String profile) {
     return readProfile(BConstant.TEMP_FOLDER_NAME, profile);
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PatchMapping("/api/member/profile")
+  public ResponseEntity<Void> 프사_변경(@RequestParam @NotEmpty String profile, Principal principal) {
+    // 1. 사용자의 현재 프사를 삭제한다
+    // 2. 새로운 프사의 이름을 계산한다
+    // 3. temp에서 profile로 이동시킨다
+    // 4. db를 업데이트한다
+
+    Member m = memberDao.findByUsername(principal.getName()).orElseThrow(()->new NoSuchElementException("사용자를 찾을 수 없습니다"));
+    String currentProfileName = m.getProfile();
+    File currentProfileFile = new File(BConstant.PROFILE_FOLDER_NAME, currentProfileName);
+    if(currentProfileFile.exists())
+      currentProfileFile.delete();
+
+    String 확장자 = profile.substring(profile.lastIndexOf("."));
+    String newProfileName = principal.getName() + 확장자;
+
+    File 임시폴더_저장된_프사 = new File(BConstant.TEMP_FOLDER_NAME, profile);
+    File newProfileFile = new File(BConstant.PROFILE_FOLDER_NAME, newProfileName);
+    try {
+      Files.move(임시폴더_저장된_프사.toPath(), newProfileFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    } catch(IOException e) {
+      e.printStackTrace();
+      return ResponseEntity.status(409).body(null);
+    }
+
+    memberDao.updateProfile(newProfileName, principal.getName());
+    return ResponseEntity.ok(null);
   }
 }

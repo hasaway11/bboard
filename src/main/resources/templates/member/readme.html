@@ -58,5 +58,25 @@
     </main>
     <footer th:replace="~{fragment/footer.html}"></footer>
   </div>
+  <script>
+    async function changeProfile() {
+      // 서버 임시폴더에 올린 프로필 이름은 <input type="hidden"  id="profile-name" name="profile">에 저장되어 있다
+      const profile = $('#profile-name').val();
+      if(profile=='') {
+        alert('새로운 프로필을 선택하지 않았습니다');
+        return;
+      }
+
+
+      const params = {profile:profile};
+      try {
+        await axios.patch("/api/member/profile", new URLSearchParams(params));
+        alert("프로필을 변경했습니다");
+        $('#profile').val("");
+      } catch(err) {
+        location.reload();
+      }
+    }
+  </script>
 </body>
 </html>

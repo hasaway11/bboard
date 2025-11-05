@@ -30,4 +30,7 @@ public interface MemberDao {
   // 비밀번호 업데이트 - 비밀번호 찾기, 비밀번호 변경
   @Update("update member set password=#{password} where username=#{username}")
   long updatePassword(String password, String username);
+
+  @Update("update member set profile=#{profile} where username=#{username}")
+  int updateProfile(String profile, String username);
 }
