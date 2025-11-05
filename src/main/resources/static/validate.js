@@ -12,7 +12,6 @@
 
       // 입력여부 + 입력한 경우 패턴체크를 수행
       function check(engName, korName, $element) {
-        console.log(engName)
         const $errorElement = $element.next();
         const value = $element.val();
 

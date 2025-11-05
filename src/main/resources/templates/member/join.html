@@ -64,10 +64,10 @@
       const r2 = passwordCheck($('#password'));
       const r3 = password2Check();
       const r4 = emailCheck();
-      //if((r1 && r2 && r3 && r4) === false)
-      //  return;
+      if((r1 && r2 && r3 && r4) === false)
+        return;
 
-      //파일을 포함한 form 처리 : form에 enctype을 multipart/form-data로 지정 후 submit
+      // 파일을 포함한 form 처리 : form에 enctype을 multipart/form-data로 지정 후 submit
       $('#join-form').submit();
     }
   </script>

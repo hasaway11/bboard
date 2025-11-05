@@ -102,7 +102,14 @@ public class MemberController {
   }
 
   @GetMapping("/member/login")
-  public void login() {
+  public ModelAndView login(HttpSession session) {
+    // 로그인에 실패해서 이동한 경우 session에 msg라는 에러 메시지가 들어있다
+    if(session.getAttribute("msg")!=null) {
+      String msg = (String)session.getAttribute("msg");
+      session.removeAttribute("msg");
+      return new ModelAndView("member/login").addObject("msg", msg);
+    }
+    return new ModelAndView("member/login");
   }
 
   @PreAuthorize("isAuthenticated()")

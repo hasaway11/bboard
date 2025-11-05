@@ -1,12 +1,10 @@
-package com.example.bboard.service;
+package com.example.bboard.security;
 
 import com.example.bboard.dao.*;
 import com.example.bboard.entity.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.*;
-
-import java.util.*;
 
 @Service
 public class BBoardUserDetailsService implements UserDetailsService {
@@ -24,6 +22,7 @@ public class BBoardUserDetailsService implements UserDetailsService {
 //    Member m = result.get();
 
     Member m = memberDao.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("사용자를 찾을 수 없습니다"));
-    return User.builder().username(m.getUsername()).password(m.getPassword()).roles(m.getRole().name()).build();
+    return User.builder().username(m.getUsername()).password(m.getPassword()).roles(m.getRole().name())
+        .accountLocked(m.isLock()).build();
   }
 }

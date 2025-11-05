@@ -36,4 +36,13 @@ public interface MemberDao {
 
   @Delete("delete from member where username=#{username}")
   int delete(String username);
+
+  @Update("update member set failed_attempts=failed_attempts+1 where username=#{username}")
+  int increaseFailedAttempts(String username);
+
+  @Update("update member set failed_attempts=5, is_lock=1 where username=#{username}")
+  int lock(String username);
+
+  @Update("update member set failed_attempts=0 where username=#{username}")
+  int resetFailedAttempts(String username);
 }
