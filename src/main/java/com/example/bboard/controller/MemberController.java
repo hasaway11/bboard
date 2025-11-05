@@ -111,9 +111,12 @@ public class MemberController {
   }
 
   @PreAuthorize("isAuthenticated()")
-  @PostMapping("/api/member/change-password")
-  public ResponseEntity<Void> changePassword(ChangePasswordRequestDto dto, Principal principal) {
+  @PostMapping("/member/change-password")
+  public String changePassword(ChangePasswordRequestDto dto, Principal principal, HttpSession session, RedirectAttributes ra) {
     memberService.changePassword(dto, principal.getName());
-    return ResponseEntity.ok(null);
+    session.invalidate();
+    // 현재 메소드에서 1회성 메시지 저장, 이동 후 메시지 출력하고 삭제
+    ra.addFlashAttribute("msg", "비밀번호를 변경했습니다. 다시 로그인하세요");
+    return "redirect:/member/login";
   }
 }

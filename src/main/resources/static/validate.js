@@ -48,10 +48,27 @@
         }
       }
 
-      function passwordCheck() {
-        return check('password', '비밀번호', $('#password'));
+      function passwordCheck($target) {
+        return check('password', '비밀번호', $target);
       }
 
       function emailCheck() {
         return check('email', '이메일', $('#email'));
+      }
+
+      function password2Check() {
+            const password = $('#password').val();
+            const password2 = $('#password2').val();
+            const errorElement = $('#password2').next();
+
+            errorElement.text('');
+            if(password2==='') {
+              errorElement.text('비밀번호 확인 : 필수입력입니다');
+              return false;
+            }
+            if(password!==password2) {
+              errorElement.text('비밀번호가 일치하지 않습니다');
+              return false;
+            }
+            return true;
       }

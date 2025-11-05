@@ -35,7 +35,7 @@
           </div>
           <div class="mt-3 mb-3">
             <label class="form-label">비밀번호:</label>
-            <input type="password" name="password" id="password" class="form-control" onfocusout="passwordCheck();">
+            <input type="password" name="password" id="password" class="form-control" onfocusout="passwordCheck($('#password'));">
             <span id="password-msg" class="fail"></span>
           </div>
           <div class="mt-3 mb-3">
@@ -59,24 +59,6 @@
   <script src="/validate.js"></script>
   <script src="/profile.js"></script>
   <script>
-
-    function password2Check() {
-      const password = $('#password').val();
-      const password2 = $('#password2').val();
-      const errorElement = $('#password2-msg');
-
-      errorElement.text('');
-      if(password2==='') {
-        errorElement.text('비밀번호 확인 : 필수입력입니다');
-        return false;
-      }
-      if(password!==password2) {
-        errorElement.text('비밀번호가 일치하지 않습니다');
-        return false;
-      }
-      return true;
-    }
-
     function 회원가입() {
       const r1 = usernameCheck();
       const r2 = passwordCheck();
