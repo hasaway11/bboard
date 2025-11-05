@@ -61,7 +61,7 @@
   <script>
     function 회원가입() {
       const r1 = usernameCheck();
-      const r2 = passwordCheck();
+      const r2 = passwordCheck($('#password'));
       const r3 = password2Check();
       const r4 = emailCheck();
       //if((r1 && r2 && r3 && r4) === false)
