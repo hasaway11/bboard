@@ -89,7 +89,7 @@ public class MemberService {
 
     String 암호화된_비밀번호= encoder.encode(dto.getPassword());
     dto.setPassword(암호화된_비밀번호);
-    dto.setProfile(profile);
+    dto.setProfile(저장_파일명);
     memberDao.insert(dto);
   }
 

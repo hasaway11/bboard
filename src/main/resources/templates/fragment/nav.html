@@ -25,5 +25,14 @@
       </ul>
     </div>
   </nav>
+  <script>
+    function doLogout() {
+      const form = `
+        <form action="/member/logout" method="post">
+        </form>
+      `;
+      $(form).appendTo($('body')).submit();
+    }
+  </script>
 </body>
 </html>

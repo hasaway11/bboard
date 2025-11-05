@@ -54,7 +54,7 @@ public class ProfileRestController {
     // 프로필 이미지를 출력하는 url과 프로필 이름을 Map에 담아 리턴
     // "/api/temp/profile?profile=spring.jpg" + "spring.jpg"
     String profileName = profile.getOriginalFilename();
-    String profileUrl = "/api/profile-image/profile?profile=" + profile.getOriginalFilename();
+    String profileUrl = "/api/profile-image/temp?profile=" + profile.getOriginalFilename();
     Map<String, Object> map = Map.of("profileUrl", profileUrl, "profileName", profileName);
     return ResponseEntity.ok(map);
   }
@@ -87,11 +87,11 @@ public class ProfileRestController {
 
   @GetMapping("/api/profile-image/profile")
   public ResponseEntity<byte[]> 미리보기(@RequestParam @NotEmpty String profile) {
-    return readProfile(BConstant.TEMP_FOLDER_NAME, profile);
+    return readProfile(BConstant.PROFILE_FOLDER_NAME, profile);
   }
 
   @GetMapping("/api/profile-image/temp")
   public ResponseEntity<byte[]> 가입할때_미리보기(@RequestParam @NotEmpty String profile) {
-    return readProfile(BConstant.PROFILE_FOLDER_NAME, profile);
+    return readProfile(BConstant.TEMP_FOLDER_NAME, profile);
   }
 }
