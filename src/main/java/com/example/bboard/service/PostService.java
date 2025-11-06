@@ -38,6 +38,7 @@ public class PostService {
     List<Long> pages = new ArrayList<>();
     for(long i=begin; i<=end; i++)
       pages.add(i);
-    return Map.of("prev", prev, "next", next, "pages", pages, "posts", posts);
+    System.out.println(Map.of("prev", prev, "next", next, "pages", pages, "posts", posts, "pageno", pageno));
+    return Map.of("prev", prev, "next", next, "pages", pages, "posts", posts, "pageno", pageno);
   }
 }

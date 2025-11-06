@@ -17,7 +17,43 @@
     <header th:replace="~{/fragment/header.html}"></header>
     <nav th:replace="~{fragment/nav.html}"></nav>
     <main>
-      <section></section>
+      <section>
+        <table class="table table-border">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>작성일</th>
+              <th>읽기</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="post:${map.posts}">
+              <td th:text="${post.pno}"></td>
+              <td>
+                <a th:href="${'/post/read?pno=' + post.pno}" th:text="${post.title}"></a>
+              </td>
+              <td th:text="${post.writer}"></td>
+              <td th:text="${post.writeTime}"></td>
+              <td th:text="${post.readCnt}"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display:flex; justify-content:center;">
+          <ul class="pagination">
+            <li th:if="${map.prev>0}" class="page-item">
+              <a class="page-link" th:href="${'/?pageno=' + map.prev}">이전으로</a>
+            </li>
+            <li th:each="page:${map.pages}" th:class="${page==map.pageno? 'page-item active':'page-item'}">
+              <a class="page-link" th:href="${'/?pageno=' + page}" th:text="${page}"></a>
+            </li>
+            <li th:if="${map.next>0}" th:class="page-item">
+              <a class="page-link" th:href="${'/?pageno=' + map.next}">다음으로</a>
+            </li>
+          </ul>
+        </div>
+      </section>
     </main>
     <footer th:replace="~{fragment/footer.html}"></footer>
   </div>
