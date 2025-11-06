@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"></script>
+  <link href="/global.css" rel="stylesheet">
+  <title>Document</title>
+</head>
+<body>
+<div id="app">
+  <header th:replace="~{/fragment/header.html}"></header>
+  <nav th:replace="~{fragment/nav.html}"></nav>
+  <main>
+    <section>
+      <form action="/post/write" method="post" id="write-form">
+        <div class="mb-3 mt-3">
+          <label class="form-label">제목:</label>
+          <input class="form-control" name="title" id="title">
+        </div>
+        <div class="mb-3 mt-3">
+          <label class="form-label">내용:</label>
+          <textarea id="summernote" name="content"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="doWrite();">작성</button>
+      </form>
+    </section>
+  </main>
+  <footer th:replace="~{fragment/footer.html}"></footer>
+  <script>
+    // $(function() { }) : 화면이 로딩되면 실행
+    $(function() {
+      $('#summernote').summernote({
+        height: 600,
+        disableResizeEditor: true
+      });
+    });
+
+    function doWrite() {
+      const title = $('#title').val();
+
+      // jQuery로 summernote에 입력한 내용읽어오기
+      // 읽어와 보면 내용이 비어있지 않고 빈 태그(<p></p>)가 들어있다
+      const text = $('#summernote').summernote('code');
+
+      // html('<b>우리나라</b>') -> html 태그가 적용되어 두꺼운 글자로
+      // text('<b>우리나라</b>') -> <b>우리나라</b> 라고 화면에 출력(html은 적용되지 않는다)
+
+      // $('<div').html(text) ->  <div><p></p></div>
+      // 윗줄에서 만들어진 div요소에서 text()만 추출 -> ""같은 것이 나올것이다
+      // trim()은 공백을 제거 -> 아무것도 입력하지 않은 경우 ""이 남는다
+      const content = $('<div>').html(text).text().trim();
+      if(title==="" || content==="") {
+        alert("제목과 내용을 입력하세요");
+        return;
+      }
+      $('#write-form').submit();
+    }
+  </script>
+</div>
+</body>
+</html>

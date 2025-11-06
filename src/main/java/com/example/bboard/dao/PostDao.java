@@ -20,4 +20,8 @@ public interface PostDao {
 
   @Select("select count(*) from post")
   long count();
+
+  PostDto.PostResponse findByPno(long pno);
+
+  int update(Post post);
 }

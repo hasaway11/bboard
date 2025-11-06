@@ -3,6 +3,7 @@ package com.example.bboard.service;
 import com.example.bboard.dao.*;
 import com.example.bboard.dto.*;
 import com.example.bboard.entity.*;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -46,5 +47,15 @@ public class PostService {
     Post post = dto.toEntity(username);
     postDao.insert(post);
     return post.getPno();
+  }
+
+  public PostDto.PostResponse read(long pno, String loginId) {
+    PostDto.PostResponse dto = postDao.findByPno(pno);
+    // 로그인했고 글쓴이가 아닌 경우 조회수 증가
+    if(loginId!=null && dto.getWriter().equals(loginId)==false) {
+      postDao.update(Post.builder().pno(pno).readCnt(1).build());
+      dto.increaseReadCnt();
+    }
+    return dto;
   }
 }
