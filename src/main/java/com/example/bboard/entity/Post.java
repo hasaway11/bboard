@@ -7,6 +7,7 @@ import java.time.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Post {
   @Setter
   private long pno;

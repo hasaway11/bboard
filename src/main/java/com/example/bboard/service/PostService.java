@@ -41,4 +41,10 @@ public class PostService {
     System.out.println(Map.of("prev", prev, "next", next, "pages", pages, "posts", posts, "pageno", pageno));
     return Map.of("prev", prev, "next", next, "pages", pages, "posts", posts, "pageno", pageno);
   }
+
+  public long write(PostDto.WriteRequest dto, String username) {
+    Post post = dto.toEntity(username);
+    postDao.insert(post);
+    return post.getPno();
+  }
 }
