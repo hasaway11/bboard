@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.web.*;
+import org.springframework.security.web.access.*;
 import org.springframework.security.web.authentication.*;
 
 // @PreAuthorize(로그인 여부), @Secured(권한 체크)를 활성화
@@ -21,10 +22,15 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
+  // @Autowired는 타입을 이용해 주입한다(by Type)
   @Autowired
   private AuthenticationFailureHandler failureHandler;
   @Autowired
   private AuthenticationSuccessHandler successHandler;
+  @Autowired
+  private AccessDeniedHandler deniedHandler;
+  @Autowired
+  private AuthenticationEntryPoint entryPoint;
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity config) throws Exception {
@@ -34,7 +40,8 @@ public class SecurityConfig {
     config.formLogin(c-> c.loginPage("/member/login").loginProcessingUrl("/member/login")
         .failureHandler(failureHandler).successHandler(successHandler));
     config.logout(c-> c.logoutUrl("/member/logout").logoutSuccessUrl("/"));
-
+    config.exceptionHandling(c->c.authenticationEntryPoint(entryPoint)
+        .accessDeniedHandler(deniedHandler));
     return config.build();
   }
 }

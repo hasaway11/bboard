@@ -5,13 +5,16 @@ import lombok.*;
 import java.time.*;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Post {
+  @Setter
   private long pno;
   private String title;
   private String content;
   private String writer;
-  private LocalDateTime write_time;
-  private long readCnt;
-  private long goodCnt;
-  private long badCnt;
+  private LocalDateTime writeTime = LocalDateTime.now();
+  private long readCnt = 0;
+  private long goodCnt = 0;
+  private long badCnt = 0;
 }

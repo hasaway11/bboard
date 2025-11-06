@@ -12,4 +12,19 @@
     from post p left join comments c on p.pno=c.pno
     group by  p.pno, p.title, p.writer, p.write_time, p.read_cnt order by p.pno desc
   </select>
+
+  <select id="findAll" resultType="com.example.bboard.dto.PostDto$ListResponse">
+    select pno, title, writer, to_char(write_time, 'yyyy-mm-dd hh:mi:ss') as write_time, read_cnt from post
+    order by pno desc offset #{start} row fetch next #{pagesize} rows only
+  </select>
 </mapper>
+
+
+
+
+
+
+
+
+
+

@@ -116,6 +116,18 @@
 
     즉 화면에서 input이 아예 없는 경우가 null이다
 
+13. 스프링 시큐리티가 담당하는 작업
+    - 인증(authentication) : 로그인을 이용해 사용자를 확인 -> 401
+        서버가 사용자만 인증 : http
+        공인진증서로 사용자도 서버를 인증(상호인증) : https
+    - 인가(authorization) : 로그인한 사용자의 권한을 확인 -> 403
+
+     스프링 시큐리티의 구성
+     - AuthenticationSuccessHandler : 로그인 성공한 다음 작업 수행
+     - AuthenticationFailureHandler : 로그인 실패후 작업 수행
+     - AccessDeniedHandler : 403이 발생했을 때 실행 -> 기본구현(로그인으로. 200)
+     - AuthenticationEntryPoint : 401이 발생했을 때 실행 -> 기본구현(로그인으로. 200)
+
 
 
 
