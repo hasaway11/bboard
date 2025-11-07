@@ -17,6 +17,51 @@
     select pno, title, writer, to_char(write_time, 'yyyy-mm-dd hh:mi:ss') as write_time, read_cnt from post
     order by pno desc offset #{start} row fetch next #{pagesize} rows only
   </select>
+
+  <!--
+    mybatis 동적쿼리를 이용한 한방 update
+    trim은 마지막 파라미터의 ,를 제거하고 다섯개 파라미터 중 하나라도 참인 경우에만 set을 앞에 추가하도록 설정
+  -->
+  <update id="update">
+    update post
+    <trim suffixOverrides="," prefix="set">
+      <if test="title!=null">title=#{title},</if>
+      <if test="content!=null">content=#{content},</if>
+      <if test="readCnt!=0">read_cnt=read_cnt+1,</if>
+      <if test="goodCnt!=0">good_cnt=good_cnt+1,</if>
+      <if test="badCnt!=0">bad_cnt=bad_cnt+1,</if>
+    </trim>
+    where pno=#{pno}
+  </update>
+
+  <!--
+    post와 comments가 1:다 관계일때 mybatis가 PostResponse를 생성 못한다.
+    개발자가 객체 생성 방법을 가려쳐줘야 한다 <resultMap>
+    !!! 마이바티스가 select 실행 결과로 객체를 생성못하는 경우 "resultMap을 찾을 수 없다" 오류가 발생
+   -->
+  <resultMap id="postDetailMap" type="com.example.bboard.dto.PostDto$PostResponse">
+    <id column="pno" property="pno" />
+    <result column="title" property="title" />
+    <result column="content" property="content" />
+    <result column="writer" property="writer" />
+    <result column="write_time" property="writeTime" />
+    <result column="read_cnt" property="readCnt" />
+    <result column="good_cnt" property="goodCnt" />
+    <result column="bad_cnt" property="badCnt" />
+    <collection property="comments" ofType="com.example.bboard.entity.Comment">
+      <id column="ccno" property="cno" />
+      <result column="ccontent" property="content" />
+      <result column="cwriter" property="writer" />
+      <result column="cwrite_time" property="writeTime" />
+      <result column="cpno" property="pno" />
+    </collection>
+  </resultMap>
+
+  <select id="findByPno" resultMap="postDetailMap">
+    select p.pno, p.title, p.content, p.writer, p.write_time, p.read_cnt, p.good_cnt, p.bad_cnt
+    , c.cno as ccno, c.content as ccontent, c.writer as cwriter, c.write_time as cwrite_time, c.pno as cpno
+    from post p join comments c on p.pno=c.pno where p.pno=#{pno}
+  </select>
 </mapper>
 
 
