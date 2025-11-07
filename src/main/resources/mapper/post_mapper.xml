@@ -60,7 +60,7 @@
   <select id="findByPno" resultMap="postDetailMap">
     select p.pno, p.title, p.content, p.writer, p.write_time, p.read_cnt, p.good_cnt, p.bad_cnt
     , c.cno as ccno, c.content as ccontent, c.writer as cwriter, c.write_time as cwrite_time, c.pno as cpno
-    from post p join comments c on p.pno=c.pno where p.pno=#{pno}
+    from post p left outer join comments c on p.pno=c.pno where p.pno=#{pno}
   </select>
 </mapper>
 

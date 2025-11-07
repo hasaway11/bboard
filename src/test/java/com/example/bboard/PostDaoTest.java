@@ -36,9 +36,14 @@ public class PostDaoTest {
     }
   }
 
-  @Test
+  //@Test
   public void findAllTestTest() {
     postDao.findAll(0, 5).stream().forEach(a-> System.out.println(a));
+  }
+
+  @Test
+  public void findByPnoTest() {
+    System.out.println(postDao.findByPno(107));
   }
 }
 

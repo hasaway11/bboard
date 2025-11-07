@@ -12,7 +12,7 @@ import java.util.*;
 // @GetMapping, @PostMapping등 url을 처리하는 함수를 모아놓은 것이 Controller(정상 처리 담당)
 // 예외를 처리하는 @ExceptionHandler를 모아놓은 클래스가 ControllerAdvice(예외 처리 담당)
 
-@ControllerAdvice
+//@ControllerAdvice
 public class BBoardAdvice {
   // DTO 검증이 실패한 경우 MethodArgumentNotValidException
   // @RequestParam 검증이 실패한 경우 HandlerMethodValidationException
@@ -35,7 +35,7 @@ public class BBoardAdvice {
     }
   }
 
-  @ExceptionHandler(NoSuchElementException.class)
+  //@ExceptionHandler(NoSuchElementException.class)
   public Object 검색에_실패한_경우_handler(HttpServletRequest req, NoSuchElementException e) {
     String accept = req.getHeader("Accept");
     String xhr = req.getHeader("X-Requestd_With");
