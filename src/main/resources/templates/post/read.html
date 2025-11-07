@@ -42,10 +42,10 @@
             <textarea class="form-control" rows="5" style="resize:none;" disabled placeholder="댓글을 작성하려면 로그인하세요"></textarea>
           </div>
           <div th:if="${isLogin==true}">
-            <textarea class="form-control" rows="5" style="resize:none;"></textarea>
+            <textarea class="form-control" rows="5" style="resize:none;" id="content"></textarea>
           </div>
           <div class="mt-2">
-            <button class="btn btn-success">댓글 작성</button>
+            <button class="btn btn-success" onclick="writeComment();">댓글 작성</button>
           </div>
         </div>
         <!-- 댓글 영역 -->
@@ -57,7 +57,7 @@
             </div>
             <div style="overflow:hidden;">
               <div th:text="${c.content}" style="float:left;"></div>
-              <button th:if="${c.writer==#authentication.name}" class="btn btn-danger" style="float:right;">삭제</button>
+              <button th:if="${c.writer==#authentication.name}" class="btn btn-danger" style="float:right;" onclick="deleteComment();">삭제</button>
             </div>
           </div>
         </div>
@@ -65,6 +65,25 @@
     </main>
     <footer th:replace="~{fragment/footer.html}"></footer>
   </div>
+
+  <script th:inline="javascript">
+    const pno = [[${post.pno}]];
+  </script>
+  <script>
+    function writeComment() {
+      // 댓글을 추가하면 현재 화면에서 댓글 영역이 갱신된다
+      const content = $('#content').val();
+      if(content==='')
+        return;
+      const params = {pno:pno, content:content}
+      try {
+        const response = axios.post('/api/comment/new', new URLSearchParams(params));
+        console.log(response.data);
+      } catch(err) {
+        console.log(err);
+      }
+    }
+  </script>
 </body>
 </html>
 
