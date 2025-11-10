@@ -3,9 +3,12 @@ package com.example.bboard.service;
 import com.example.bboard.dao.*;
 import com.example.bboard.dto.*;
 import com.example.bboard.entity.*;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.interceptor.*;
 
 import java.util.*;
 
@@ -13,6 +16,9 @@ import java.util.*;
 public class PostService {
   @Autowired
   private PostDao postDao;
+  @Autowired
+  private CommentDao commentDao;
+
   @Value("10")
   private long PAGE_SIZE;
   @Value("5")
@@ -57,5 +63,29 @@ public class PostService {
       dto.increaseReadCnt();
     }
     return dto;
+  }
+
+  // 현재 메소드를 분리 불가능한 트랜잭션으로 지정
+  @Transactional
+  public void delete(Long pno, String loginId) {
+    // !!!!! 만약 댓글을 삭제한 다음 글을 삭제하려다가 오류가 발생하면 어떻게 하지 !!!!!
+    // 트랜잭션(transaction) : 사람이 생각하는 하나의 작업 (dao에서는 여러 작업이 될 수 있다)
+    //                        글 삭제 트랜잭션은 댓글 삭제 + 글 삭제로 구성
+    //                        트랙잭션을 구성하는 sql은 모두 성공(commit) or 모두 실패(rollback) -> 부분 성공되어서는 안된다
+    commentDao.deleteByPno(pno);
+    if(postDao.deleteByPnoAndLoginId(pno, loginId) == 0) {
+      // 예외를 발생시키지 말고 수동으로 롤백
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+      // 정상 종료
+      return;
+    }
+  }
+
+  public void update(PostDto.UpdateRequest dto, String loginId) {
+    PostDto.PostResponse search = postDao.findByPno(dto.getPno());
+    if(search.getWriter().equals(loginId)) {
+      Post post = dto.toEntity();
+      postDao.update(post);
+    }
   }
 }

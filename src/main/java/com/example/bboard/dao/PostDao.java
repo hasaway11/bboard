@@ -24,4 +24,7 @@ public interface PostDao {
   PostDto.PostResponse findByPno(long pno);
 
   int update(Post post);
+
+  @Delete("delete from post where pno=#{pno} and writer=#{loginId}")
+  int deleteByPnoAndLoginId(Long pno, String loginId);
 }

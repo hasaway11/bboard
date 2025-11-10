@@ -49,4 +49,18 @@ public class PostDto {
       this.readCnt++;
     }
   }
+
+  @Data
+  public static class UpdateRequest {
+    @NotNull
+    private Long pno;
+    @NotEmpty
+    private String title;
+    @NotEmpty
+    private String content;
+
+    public Post toEntity() {
+      return Post.builder().pno(pno).title(title).content(content).build();
+    }
+  }
 }

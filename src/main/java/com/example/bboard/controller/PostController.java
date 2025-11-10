@@ -2,13 +2,17 @@ package com.example.bboard.controller;
 
 import com.example.bboard.dto.*;
 import com.example.bboard.service.*;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.http.*;
 import org.springframework.security.access.annotation.*;
+import org.springframework.security.access.prepost.*;
 import org.springframework.security.core.*;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.*;
+import org.springframework.web.servlet.mvc.support.*;
 
 import java.security.*;
 import java.util.*;
@@ -47,4 +51,26 @@ public class PostController {
         .addObject("isLogin", principal!=null)
         .addObject("isWriter", dto.getWriter().equals(loginId));
   }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/post/delete")
+  public String delete(@RequestParam @NotNull Long pno, Principal principal) {
+    postService.delete(pno, principal.getName());
+    return "redirect:/";
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/post/update")
+  public ModelAndView update(@RequestParam @NotNull Long pno, Principal principal) {
+    PostDto.PostResponse dto = postService.read(pno, principal.getName());
+    return new ModelAndView("post/update").addObject("post", dto);
+  }
+
+  @Secured("ROLE_USER")
+  @PatchMapping("/api/post")
+  public ResponseEntity<Void> update(@ModelAttribute @Valid PostDto.UpdateRequest dto, Principal principal) {
+    postService.update(dto, principal.getName());
+    return ResponseEntity.ok(null);
+  }
+
 }

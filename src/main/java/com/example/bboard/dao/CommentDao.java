@@ -15,4 +15,7 @@ public interface CommentDao {
 
   @Delete("delete from comments where cno=#{cno} and writer=#{loginId}")
   int deleteByCnoAndLoginId(long cno, String loginId);
+
+  @Delete("delete from comments where pno=#{pno}")
+  int deleteByPno(Long pno);
 }
