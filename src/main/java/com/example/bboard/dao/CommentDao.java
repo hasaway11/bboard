@@ -12,4 +12,7 @@ public interface CommentDao {
 
   @Select("select * from comments where pno=#{pno} order by pno desc")
   List<Comment> findByPno(long pno);
+
+  @Delete("delete from comments where cno=#{cno} and writer=#{loginId}")
+  int deleteByCnoAndLoginId(long cno, String loginId);
 }

@@ -49,8 +49,10 @@
             <button class="btn btn-success" onclick="writeComment();">댓글 작성</button>
           </div>
         </div>
-        <!-- 댓글 영역 -->
-        <div style="border-top:0.8px solid gray; " class="mb-3">
+        <!--
+          댓글 영역에 id를 지정해서 댓글들을 지운 다음 출력해야 한다
+        -->
+        <div style="border-top:0.8px solid gray; " class="mb-3" id="comments">
           <div th:each="c:${post.comments}" style="border-bottom:0.8px solid gray; height: 70px;">
             <div style="overflow:hidden;">
               <div th:text="${c.writer}" style="float:left;"></div>
@@ -58,7 +60,8 @@
             </div>
             <div style="overflow:hidden;">
               <div th:text="${c.content}" style="float:left;"></div>
-              <button th:if="${c.writer==#authentication.name}" class="btn btn-danger" style="float:right;" onclick="deleteComment();">삭제</button>
+              <button th:if="${c.writer == #authentication.name}" class="btn btn-danger" style="float:right;"
+                      th:onclick="'deleteComment(' + ${c.cno} + ');'">삭제</button>
             </div>
           </div>
         </div>
@@ -69,8 +72,31 @@
 
   <script th:inline="javascript">
     const pno = [[${post.pno}]];
+    const 로그인한_아이디 = [[${#authentication.name}]];
   </script>
   <script>
+    function 댓글_출력(comments) {
+      // 선택한 요소의 자식들을 지운다. -> 지금 같은 경우는 댓글 삭제
+      $('#comments').empty();
+      let html = ``;
+      for(const c of comments) {
+        // 현재 로그인한 아이디와 댓글의 작성자가 일치한다면
+        const is댓글_작성자 = 로그인한_아이디 === c.writer;
+        html += `
+          <div style="border-bottom:0.8px solid gray; height: 70px;">
+            <div style="overflow:hidden;">
+              <div style="float:left;">${c.writer}</div>
+              <div style="float:right">${c.writeTime}</div>
+            </div>
+            <div style="overflow:hidden;">
+              <div style="float:left;">${c.content}</div>
+              ${is댓글_작성자?`<button class="btn btn-danger" style="float:right;" onclick="deleteComment(${c.cno});">삭제</button>`:''}
+            </div>
+          </div>
+        `;
+      }
+      $('#comments').html(html);
+    }
     async function writeComment() {
       // 댓글을 추가하면 현재 화면에서 댓글 영역이 갱신된다
       const content = $('#content').val();
@@ -80,6 +106,19 @@
       try {
         const response = await axios.post('/api/comment/new', new URLSearchParams(params));
         console.log(response.data);
+        댓글_출력(response.data);
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    // delete는 querystring으로 파라미터를 전달해야 한다 /api/comment?pno=11&cno=20
+    async function deleteComment(cno) {
+      const params = {pno:pno, cno:cno}
+      try {
+        const response = await axios.delete('/api/comment', {params});
+        console.log(response.data);
+        댓글_출력(response.data);
       } catch(err) {
         console.log(err);
       }

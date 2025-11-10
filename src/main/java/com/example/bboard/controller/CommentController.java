@@ -22,4 +22,13 @@ public class CommentController {
     List<Comment> comments = commentService.write(content, principal.getName(), pno);
     return ResponseEntity.ok(comments);
   }
+
+  // 댓글 번호로 댓글을 삭제하고, 글번호로 댓글들을 출력
+  @PreAuthorize("isAuthenticated()")
+  @DeleteMapping("/api/comment")
+  public ResponseEntity<List<Comment>> delete(@RequestParam long pno, @RequestParam long cno, Principal principal) {
+    List<Comment> comments = commentService.delete(pno, cno, principal.getName());
+    return ResponseEntity.ok(comments);
+  }
+
 }

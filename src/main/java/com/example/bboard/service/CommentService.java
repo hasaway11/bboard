@@ -16,4 +16,9 @@ public class CommentService {
     commentDao.insert(content, writer, pno);
     return commentDao.findByPno(pno);
   }
+
+  public List<Comment> delete(long pno, long cno, String loginId) {
+    commentDao.deleteByCnoAndLoginId(cno, loginId);
+    return commentDao.findByPno(pno);
+  }
 }
